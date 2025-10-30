@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Trash2 } from "lucide-react";
 
 interface CreateTaskModalProps {
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: {
+    instructions: string;
+    schedule: string;
+    date: string;
+    time: string;
+    platform: string;
+  }) => void;
   onDelete?: () => void;
   defaultData?: {
     instructions?: string;
@@ -36,8 +42,25 @@ export function CreateTaskModal({
     defaultData?.platform || "In-app, Email, and Mobile"
   );
 
+  // Reset state when defaultData changes (for editing a different task)
+  useEffect(() => {
+    setInstructions(defaultData?.instructions || "");
+    setSchedule(defaultData?.schedule || "Once");
+    setDate(
+      defaultData?.date
+        ? new Date(defaultData.date).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0]
+    );
+    setTime(defaultData?.time || "12:00");
+    setPlatform(defaultData?.platform || "In-app, Email, and Mobile");
+  }, [defaultData]);
+
   const handleSave = () => {
-    if (!instructions.trim()) return alert("Please enter some instructions!");
+    if (!instructions.trim()) {
+      alert("Please enter some instructions!");
+      return;
+    }
+
     onSave({
       instructions,
       schedule,
@@ -79,7 +102,7 @@ export function CreateTaskModal({
             />
           </div>
 
-          {/* Schedule */}
+          {/* Schedule, Date, Time */}
           <div className="mb-6 space-y-3 sm:space-y-0 sm:flex sm:gap-3">
             <div className="flex-1">
               <label className="block text-gray-400 text-sm font-medium mb-2">
@@ -117,7 +140,7 @@ export function CreateTaskModal({
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-1 text-white focus:outline-none focus:border-orange-500 transition-colors"
               />
             </div>
           </div>
