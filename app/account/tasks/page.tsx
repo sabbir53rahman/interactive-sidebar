@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Clock, ArrowLeft } from "lucide-react";
 import { CreateTaskModal } from "@/components/create-task-modal";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Task {
   id: string;
@@ -17,7 +18,26 @@ interface Task {
 export default function TasksPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [activeTab, setActiveTab] = useState("Scheduled");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const queryTab = searchParams.get("tab"); // Get current tab from URL
+  const [activeTab, setActiveTab] = useState(queryTab || "Scheduled");
+
+  useEffect(() => {
+    // Update tab if query param changes externally
+    if (queryTab && queryTab.toLowerCase() !== activeTab.toLowerCase()) {
+      setActiveTab(queryTab === "alert" ? "Alerts" : "Scheduled");
+    }
+  }, [queryTab]);
+
+  // Function to handle tab change and update URL
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+
+    const tabQuery = tab === "Scheduled" ? "scheduled" : "alert";
+    router.replace(`/account/tasks?tab=${tabQuery}`);
+  };
 
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -141,7 +161,7 @@ export default function TasksPage() {
           {["Scheduled", "Alerts"].map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               className={`px-3 py-2 text-sm font-medium ${
                 activeTab === tab
                   ? "text-white border-b-2 border-white"
