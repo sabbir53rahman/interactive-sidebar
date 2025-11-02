@@ -42,7 +42,7 @@ export function CreateTaskModal({
     defaultData?.platform || "In-app, Email, and Mobile"
   );
 
-  // Reset state when defaultData changes (for editing a different task)
+  // Reset state when editing another task
   useEffect(() => {
     setInstructions(defaultData?.instructions || "");
     setSchedule(defaultData?.schedule || "Once");
@@ -56,62 +56,57 @@ export function CreateTaskModal({
   }, [defaultData]);
 
   const handleSave = () => {
-    if (!instructions.trim()) {
-      alert("Please enter some instructions!");
-      return;
-    }
-
-    onSave({
-      instructions,
-      schedule,
-      date,
-      time,
-      platform,
-    });
+    if (!instructions.trim()) return;
+    onSave({ instructions, schedule, date, time, platform });
   };
 
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+        onClick={onClose}
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 px-4 sm:px-0">
-        <div className="bg-[#191A1A] border border-[#444] rounded-lg w-full max-w-md p-6 animate-in fade-in slide-in-from-bottom-4 duration-300 shadow-lg">
+        <div className="bg-[#1C1C1C] border border-[#2A2A2A] rounded-xl w-full max-w-xl p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white text-lg font-semibold">Scheduled Task</h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-gray-100 text-lg font-medium">
+              Scheduled task
+            </h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-[#2a2a2a] rounded transition-colors"
+              className="p-1 hover:bg-[#2a2a2a] rounded-md transition-colors"
             >
               <X size={20} className="text-gray-400" />
             </button>
           </div>
 
           {/* Instructions */}
-          <div className="mb-6">
-            <label className="block text-gray-400 text-sm font-medium mb-2">
+          <div className="mb-5">
+            <label className="block text-sm text-gray-400 mb-2">
               Instructions
             </label>
             <textarea
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               placeholder="Describe what you want to automate"
-              className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors resize-none h-24"
+              className="w-full h-[90px] bg-[#252928] border border-[#222] text-gray-200 text-sm rounded-md px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#48BEF7] resize-none"
             />
           </div>
 
           {/* Schedule, Date, Time */}
-          <div className="mb-6 space-y-3 sm:space-y-0 sm:flex sm:gap-3">
-            <div className="flex-1">
-              <label className="block text-gray-400 text-sm font-medium mb-2">
+          <div className="mb-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
                 Schedule
               </label>
               <select
                 value={schedule}
                 onChange={(e) => setSchedule(e.target.value)}
-                className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-[#252928] border border-[#222] text-gray-200 text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#48BEF7]"
               >
                 <option>Once</option>
                 <option>Daily</option>
@@ -120,40 +115,36 @@ export function CreateTaskModal({
               </select>
             </div>
 
-            <div className="flex-1">
-              <label className="block text-gray-400 text-sm font-medium mb-2">
-                Date
-              </label>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Date</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-[#252928] border border-[#222] text-gray-200 text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#48BEF7]"
               />
             </div>
 
-            <div className="flex-1">
-              <label className="block text-gray-400 text-sm font-medium mb-2">
-                Time
-              </label>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Time</label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-1 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-[#252928] border border-[#222] text-gray-200 text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#48BEF7]"
               />
             </div>
           </div>
 
           {/* Notification Platform */}
-          <div className="mb-6">
-            <label className="block text-gray-400 text-sm font-medium mb-2">
+          <div className="mb-7">
+            <label className="block text-sm text-gray-400 mb-2">
               Notification platform
             </label>
             <select
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
-              className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-[#252928] border border-[#222] text-gray-200 text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#48BEF7]"
             >
               <option>In-app, Email, and Mobile</option>
               <option>In-app only</option>
@@ -167,7 +158,7 @@ export function CreateTaskModal({
             {onDelete && (
               <button
                 onClick={onDelete}
-                className="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-red-500 border border-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors flex items-center gap-2"
               >
                 <Trash2 size={16} />
                 Delete
@@ -175,13 +166,18 @@ export function CreateTaskModal({
             )}
             <button
               onClick={onClose}
-              className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
+              className="px-5 py-2 text-gray-300 bg-[#2a2a2a] rounded-md hover:bg-[#333] transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-medium"
+              disabled={!instructions.trim()}
+              className={`px-5 py-2 rounded-md font-medium transition-colors ${
+                instructions.trim()
+                  ? "bg-[#48BEF7] text-black hover:bg-[#3da9db]"
+                  : "bg-[#2a2a2a] text-gray-500 cursor-not-allowed"
+              }`}
             >
               Save
             </button>
